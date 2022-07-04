@@ -4,8 +4,7 @@
   "description": "Multiplayer worlds With Authentication Based on NFT ownership",
   "type": "module",
   "module": "./dist/index.mjs",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "types": "./dist/src/index.d.ts",
   "files": [
     "scripts/postinstall.cjs",
     "dist/**/*",
