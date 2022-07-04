@@ -1,0 +1,52 @@
+{{#if environment}}
+name = "do-verse-example-{{environment}}"
+{{else}}
+name = "do-verse-example"
+{{/if}}
+
+main = "dist/example.mjs"
+compatibility_date = "2022-05-28"
+account_id = ""
+workers_dev = {{devMode}}
+
+usage_model= "unbound" # "bundled" is too restrictive
+
+# TODO investigate why ethers node version is used
+node_compat = true
+
+
+kv_namespaces = [
+  { binding = "ACCESS_TOKENS", id = "{{KV_ACCESS_TOKENS}}" }
+]
+
+
+[build]
+command = "node build.js"
+
+# [triggers]
+# crons = ["* * * * *"]
+
+[vars]
+ENVIRONMENT = "{{environment}}"
+ETHEREUM_NODE = "{{ETHEREUM_NODE}}"
+
+
+[durable_objects]
+bindings = [
+  {name = "ROOMS", class_name = "Room"},
+  {name = "ETHEREUM_EVENTS", class_name = "EthereumEventsDO"}
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["EthereumEventsDO", "Room"]
+
+[miniflare]
+kv_persist = true
+cache_persist = true
+# durable_objects_persist = true
+compatibility_flags = ["durable_object_alarms"]
+
+
+
+
