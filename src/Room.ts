@@ -50,10 +50,10 @@ export class Room {
     let counter = 0;
     this.socketConnections.forEach((connection) => {
       if (connection.webSocket !== exceptSocket) {
-        console.log(`sending to ${++counter}`);
+        // console.log(`sending to ${++counter}`);
         connection.webSocket.send(JSON.stringify(message));
       } else {
-        console.log(`not sending to ${++counter}`);
+        // console.log(`not sending to ${++counter}`);
       }
     });
   }
@@ -69,6 +69,14 @@ export class Room {
     }
     state = func(state);
     this.state.storage.put<RoomState>('_state_', state);
+  }
+
+  async onAccountValidated({
+    owner,
+    signature,
+    message,
+  }: { owner: string; signature: string; message: string }) {
+
   }
 
   async handleSocketConnection(webSocket: WebSocket) {
@@ -240,6 +248,21 @@ export class Room {
                 break;
               }
               if (valid) {
+                try {
+                  await this.onAccountValidated({owner, message, signature})
+                } catch(err) {
+                  response = {
+                    type: 'error',
+                    message:
+                      'Internal Server Error (Failed to Validate Account)',
+                    code: 500,
+                    error: formatError(err),
+                    stack: (err as any).stack,
+                  };
+                  break;
+                }
+
+
                 connection.authenticatedAddress = request.owner;
 
                 const accessToken = crypto.randomUUID();
