@@ -127,13 +127,13 @@ export class Room {
               position: { x: 0, y: 0, z: 0 },
               rotation: { rx: 0, ry: 0, rz: 0 },
               animation: 'Idle',
-              online: true
               // TODO animationStartTime?
             };
 
             currentState.position = message.position;
             currentState.rotation = message.rotation;
             currentState.animation = message.animation;
+            delete currentState.online;// do not store it
             state.avatars[tokenID] = currentState;
             return state;
           });
