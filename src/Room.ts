@@ -40,6 +40,7 @@ export class Room {
     }
 
     try {
+      // console.log(`closing session ${session.tokenIDChosen} (${session.authenticatedAddress})`);
       webSocket.close(1011, 'WebSocket closed.');
     } catch (e) {
       // ignore errors here
@@ -89,6 +90,12 @@ export class Room {
     if (!state) {
       state = { avatars: {} };
     }
+
+    for (const socketConnection of this.socketConnections) {
+      if (socketConnection.webSocket.readyState !== WebSocket.READY_STATE_CLOSED && socketConnection.webSocket.readyState !== WebSocket.READY_STATE_CLOSING && socketConnection.tokenIDChosen && state.avatars[socketConnection.tokenIDChosen]) {
+        state.avatars[socketConnection.tokenIDChosen].online = true;
+      }
+    }
     // if (!state[request.token]) {
     //   state[request.token] = {position: {x: 0, y: 0, z :0}};
     // }
@@ -120,6 +127,7 @@ export class Room {
               position: { x: 0, y: 0, z: 0 },
               rotation: { rx: 0, ry: 0, rz: 0 },
               animation: 'Idle',
+              online: true
               // TODO animationStartTime?
             };
 
@@ -136,6 +144,7 @@ export class Room {
               position: message.position,
               rotation: message.rotation,
               animation: message.animation,
+              online: true
             },
             connection.webSocket,
           );
@@ -389,6 +398,14 @@ export class Room {
     webSocket.addEventListener('close', () => {
       console.error(`socket was closed`);
       this.clearSocketConnection(connection, webSocket);
+
+      if (connection.tokenIDChosen) {
+        this.broadcast({
+          type: 'offline',
+          tokenID: connection.tokenIDChosen
+        }, webSocket)
+      }
+
     });
 
     webSocket.addEventListener('error', (e) => {

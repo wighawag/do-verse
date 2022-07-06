@@ -46,6 +46,7 @@ export type AvatarOnServer = {
   position: { x: number; y: number; z: number };
   rotation: { rx: number; ry: number; rz: number };
   animation: string;
+  online?: boolean;
 };
 export type Avatars = {
   [tokenID: string]: AvatarOnServer;
@@ -61,7 +62,15 @@ export type Move = {
   position: { x: number; y: number; z: number };
   rotation: { rx: number; ry: number; rz: number };
   animation: string;
+  online?: boolean;
+  // TODO timestamp
+};
+
+
+export type Offline = {
+  type: "offline";
+  tokenID: string;
 };
 
 export type SocketClientMessageTypes = Move;
-export type SocketServerMessageTypes = RoomData | Move;
+export type SocketServerMessageTypes = RoomData | Move | Offline;
