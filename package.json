@@ -1,6 +1,6 @@
 {
   "name": "do-verse",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Multiplayer worlds With Authentication Based on NFT ownership",
   "type": "module",
   "module": "./dist/index.mjs",
