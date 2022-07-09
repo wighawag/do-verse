@@ -92,7 +92,7 @@ export class Room {
     }
 
     for (const socketConnection of this.socketConnections) {
-      if (socketConnection.webSocket.readyState !== WebSocket.READY_STATE_CLOSED && socketConnection.webSocket.readyState !== WebSocket.READY_STATE_CLOSING && socketConnection.tokenIDChosen && state.avatars[socketConnection.tokenIDChosen]) {
+      if (socketConnection.tokenIDChosen && state.avatars[socketConnection.tokenIDChosen]) {
         state.avatars[socketConnection.tokenIDChosen].online = true;
       }
     }
