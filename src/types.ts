@@ -1,5 +1,5 @@
 export type SocketServerErrorResponse = {
-  type: "error";
+  type: 'error';
   message: string;
   code: number;
   error?: any;
@@ -12,29 +12,29 @@ export type SocketRequestResponse<RQ, RS> = {
 };
 
 export type SocketTokenSelection = SocketRequestResponse<
-  { type: "select"; token: string },
-  { type: "select"; token: string }
+  { type: 'select'; token: string },
+  { type: 'select'; token: string }
 >;
 
 export type SocketAuthentication = SocketRequestResponse<
   | {
-      type: "authentication";
-      method: "signature";
+      type: 'authentication';
+      method: 'signature';
       owner: string;
       signature: string;
       timestamp: number;
     }
-  | { type: "authentication"; method: "accessToken"; accessToken: string },
+  | { type: 'authentication'; method: 'accessToken'; accessToken: string },
   {
-    type: "authentication";
+    type: 'authentication';
     authenticatedAddress: string;
     accessToken: { token: string; expiration: number };
   }
 >;
 
 export type SocketDeAuthentication = SocketRequestResponse<
-  { type: "deauthentication" },
-  { type: "deauthentication" }
+  { type: 'deauthentication' },
+  { type: 'deauthentication' }
 >;
 
 export type SocketRequestResponseTypes =
@@ -52,12 +52,13 @@ export type Avatars = {
   [tokenID: string]: AvatarOnServer;
 };
 export type RoomData = {
-  type: "data";
+  type: 'data';
   avatars: Avatars;
+  messages: string[];
 };
 
 export type Move = {
-  type: "move";
+  type: 'move';
   tokenID: string;
   position: { x: number; y: number; z: number };
   rotation: { rx: number; ry: number; rz: number };
@@ -68,7 +69,7 @@ export type Move = {
 
 
 export type Offline = {
-  type: "offline";
+  type: 'offline';
   tokenID: string;
 };
 
