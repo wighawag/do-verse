@@ -47,8 +47,7 @@ export class Room {
     }
   }
 
-  broadcast(message: SocketServerMessageTypes, exceptSocket: WebSocket) {
-    let counter = 0;
+  broadcast(message: SocketServerMessageTypes, exceptSocket?: WebSocket) {
     this.socketConnections.forEach((connection) => {
       if (connection.webSocket !== exceptSocket) {
         // console.log(`sending to ${++counter}`);
@@ -109,6 +108,7 @@ export class Room {
     this.send(connection.webSocket, {
       type: 'data',
       avatars: state.avatars,
+      messages: [], // TODO store messages
     });
     console.log(`...`);
 
@@ -174,6 +174,21 @@ export class Room {
             connection.webSocket,
           );
           break;
+        case 'message':
+          if (typeof message.text === 'string' && message.text.length <= 100) {
+            throw new Error('invalid message');
+          }
+          await this.broadcast(
+            {
+              type: 'message',
+              account: connection.authenticatedAddress,
+              tokenID: connection.tokenIDChosen,
+              text: message.text,
+            },
+            // connection.webSocket, // TODO ?
+          );
+          break;
+
         default: {
           throw new Error(`Unknown Message Type: ${message.type}`);
         }

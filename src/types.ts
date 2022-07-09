@@ -67,11 +67,26 @@ export type Move = {
   // TODO timestamp
 };
 
+export type ClientTextMessage = {
+  type: 'message';
+  text: string;
+};
+
+export type ServerTextMessage = {
+  type: 'message';
+  text: string;
+  account?: string;
+  tokenID?: string;
+};
 
 export type Offline = {
   type: 'offline';
   tokenID: string;
 };
 
-export type SocketClientMessageTypes = Move;
-export type SocketServerMessageTypes = RoomData | Move | Offline;
+export type SocketClientMessageTypes = Move | ClientTextMessage;
+export type SocketServerMessageTypes =
+  | RoomData
+  | Move
+  | Offline
+  | ServerTextMessage;
