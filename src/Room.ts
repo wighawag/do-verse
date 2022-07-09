@@ -129,7 +129,7 @@ export class Room {
           }
           if (
             !(
-              typeof message.animation === 'string' &&
+              (!message.animation || typeof message.animation === 'string') &&
               typeof message.position.x === 'number' &&
               typeof message.position.y === 'number' &&
               typeof message.position.z === 'number' &&
@@ -138,9 +138,11 @@ export class Room {
               typeof message.rotation.rz === 'number'
             )
           ) {
-            throw new Error(`invalid data`);
+            throw new Error(
+              `invalid data`, //: ${JSON.stringify(message, null, 2)}`,
+            );
           }
-          if (message.animation.length > 64) {
+          if (message.animation && message.animation.length > 64) {
             throw new Error(`animation name exceeds authorized length`);
           }
           await this.updateRoomState((state) => {
@@ -157,7 +159,10 @@ export class Room {
             currentState.rotation.rx = message.rotation.rx;
             currentState.rotation.ry = message.rotation.ry;
             currentState.rotation.rz = message.rotation.rz;
-            currentState.animation = message.animation;
+            if (message.animation) {
+              currentState.animation = message.animation;
+            }
+
             delete currentState.online; // do not store it
             state.avatars[tokenID] = currentState;
             return state;
