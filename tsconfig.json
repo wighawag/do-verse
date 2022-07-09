@@ -9,9 +9,6 @@
     // "noEmit": true,
     "esModuleInterop": true,
     "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    },
     "composite": true
   },
   "include": ["src/**/*", "env.d.ts", "lib"],

@@ -195,7 +195,7 @@ export class Room {
           break;
 
         default: {
-          throw new Error(`Unknown Message Type: ${message.type}`);
+          throw new Error(`Unknown Message Type: ${(message as any).type}`);
         }
       }
     };

@@ -2,7 +2,7 @@ import {
   createJSONResponse,
   parseGETParams,
   pathFromURL,
-} from '@/utils/request';
+} from './utils/request';
 import {
   EventWithId,
   EthereumEventsDO,

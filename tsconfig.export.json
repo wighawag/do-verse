@@ -11,10 +11,7 @@
     "strict": true,
     // "noEmit": true,
     "esModuleInterop": true,
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "baseUrl": "./"
   },
   "include": ["src/**/*", "env.d.ts"]
 }
