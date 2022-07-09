@@ -76,9 +76,11 @@ export class Room {
     owner,
     signature,
     message,
-  }: { owner: string; signature: string; message: string }) {
-
-  }
+  }: {
+    owner: string;
+    signature: string;
+    message: string;
+  }) {}
 
   async handleSocketConnection(webSocket: WebSocket) {
     webSocket.accept();
@@ -92,7 +94,10 @@ export class Room {
     }
 
     for (const socketConnection of this.socketConnections) {
-      if (socketConnection.tokenIDChosen && state.avatars[socketConnection.tokenIDChosen]) {
+      if (
+        socketConnection.tokenIDChosen &&
+        state.avatars[socketConnection.tokenIDChosen]
+      ) {
         state.avatars[socketConnection.tokenIDChosen].online = true;
       }
     }
@@ -122,6 +127,22 @@ export class Room {
             );
             return;
           }
+          if (
+            !(
+              typeof message.animation === 'string' &&
+              typeof message.position.x === 'number' &&
+              typeof message.position.y === 'number' &&
+              typeof message.position.z === 'number' &&
+              typeof message.rotation.rx === 'number' &&
+              typeof message.rotation.ry === 'number' &&
+              typeof message.rotation.rz === 'number'
+            )
+          ) {
+            throw new Error(`invalid data`);
+          }
+          if (message.animation.length > 64) {
+            throw new Error(`animation name exceeds authorized length`);
+          }
           await this.updateRoomState((state) => {
             const currentState = state.avatars[tokenID] || {
               position: { x: 0, y: 0, z: 0 },
@@ -130,10 +151,14 @@ export class Room {
               // TODO animationStartTime?
             };
 
-            currentState.position = message.position;
-            currentState.rotation = message.rotation;
+            currentState.position.x = message.position.x;
+            currentState.position.y = message.position.y;
+            currentState.position.z = message.position.z;
+            currentState.rotation.rx = message.rotation.rx;
+            currentState.rotation.ry = message.rotation.ry;
+            currentState.rotation.rz = message.rotation.rz;
             currentState.animation = message.animation;
-            delete currentState.online;// do not store it
+            delete currentState.online; // do not store it
             state.avatars[tokenID] = currentState;
             return state;
           });
@@ -144,7 +169,7 @@ export class Room {
               position: message.position,
               rotation: message.rotation,
               animation: message.animation,
-              online: true
+              online: true,
             },
             connection.webSocket,
           );
@@ -258,8 +283,8 @@ export class Room {
               }
               if (valid) {
                 try {
-                  await this.onAccountValidated({owner, message, signature})
-                } catch(err) {
+                  await this.onAccountValidated({ owner, message, signature });
+                } catch (err) {
                   response = {
                     type: 'error',
                     message:
@@ -270,7 +295,6 @@ export class Room {
                   };
                   break;
                 }
-
 
                 connection.authenticatedAddress = request.owner;
 
@@ -400,12 +424,14 @@ export class Room {
       this.clearSocketConnection(connection, webSocket);
 
       if (connection.tokenIDChosen) {
-        this.broadcast({
-          type: 'offline',
-          tokenID: connection.tokenIDChosen
-        }, webSocket)
+        this.broadcast(
+          {
+            type: 'offline',
+            tokenID: connection.tokenIDChosen,
+          },
+          webSocket,
+        );
       }
-
     });
 
     webSocket.addEventListener('error', (e) => {
