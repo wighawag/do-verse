@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext"],
+    "types": ["@cloudflare/workers-types"],
+    "moduleResolution": "node",
+    "strict": true,
+    // "noEmit": true,
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "composite": true
+  },
+  "include": ["src/**/*", "env.d.ts", "lib"],
+  "ts-node": {
+    "files": true,
+    "types": ["@cloudflare/workers-types", "@types/node"]
+  },
+  "files": ["env.d.ts"]
+}

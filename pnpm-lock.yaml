@@ -9,7 +9,7 @@ specifiers:
   '@types/jest': ^28.1.2
   '@types/node': ^18.0.0
   cross-env: ^7.0.3
-  do-ethereum-events: 0.2.14
+  do-ethereum-events: 0.2.15
   do-json-db: 0.0.17
   dotenv-cli: ^5.1.0
   esbuild: ^0.14.47
@@ -28,7 +28,7 @@ specifiers:
 
 dependencies:
   '@ethersproject/wallet': 5.6.2
-  do-ethereum-events: 0.2.14
+  do-ethereum-events: 0.2.15
 
 devDependencies:
   '@cloudflare/workers-types': 3.14.0
@@ -1631,8 +1631,8 @@ packages:
     engines: {node: '>=0.3.1'}
     dev: true
 
-  /do-ethereum-events/0.2.14:
-    resolution: {integrity: sha512-4oCEzpfHR+8P+TOEiKZ2MQbe1AzFW2wHTmmkXNqQxlAo3OJz3HuxCtzZPzCS25EfDOprsJVqw7vGXfE3GtIdVw==}
+  /do-ethereum-events/0.2.15:
+    resolution: {integrity: sha512-JtbXJ5r4zBaGFCyGqWomfxxjaVw9Y1rRiLu8c2rqe46zqMk7Dv0Q6Hy67Po65A1rYbEVH3j3A3dGEuQK6cizzg==}
     requiresBuild: true
     dependencies:
       '@ethersproject/abi': 5.6.4
