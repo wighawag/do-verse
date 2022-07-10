@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { cwd } = require('process');
 
 // let logs = '';
 // const console = {
@@ -20,10 +21,10 @@ function getPackageJSONPath(startPath) {
 
   let searchPath = startPath;
   let fileFound = false;
-  let filepath;
+  let filepathFromInstallingProject;
   while (!fileFound) {
-    filepath = path.join(searchPath, 'package.json');
-    fileFound = fs.existsSync(filepath);
+    filepathFromInstallingProject = path.join(searchPath, 'package.json');
+    fileFound = fs.existsSync(filepathFromInstallingProject);
     if (!fileFound) {
       const newPath = path.join(searchPath, '..');
       if (
@@ -39,7 +40,7 @@ function getPackageJSONPath(startPath) {
   }
 
   if (fileFound) {
-    return path.normalize(filepath);
+    return path.normalize(filepathFromInstallingProject);
   }
 }
 
@@ -97,19 +98,28 @@ function copy(destination) {
   );
 }
 
-let filepath;
+let filepathFromInstallingProject;
 if (process.env.INIT_CWD) {
-  filepath = getPackageJSONPath(process.env.INIT_CWD);
+  filepathFromInstallingProject = getPackageJSONPath(process.env.INIT_CWD);
+} else {
+  const currentFolder = cwd();
+  if (
+    path.normalize(path.join(__dirname, '../')) !==
+    path.normalize(currentFolder)
+  ) {
+    filepathFromInstallingProject = getPackageJSONPath(currentFolder);
+    console.log(`using current dir: ${filepathFromInstallingProject}`);
+  }
 }
 
-if (!filepath) {
+if (!filepathFromInstallingProject) {
   console.error(
     `could not find package.json of parent package${
       process.env.INIT_CWD ? '' : ' (no INIT_CWD)'
     }`,
   );
 } else {
-  const content = fs.readFileSync(filepath, 'utf8');
+  const content = fs.readFileSync(filepathFromInstallingProject, 'utf8');
   const json = JSON.parse(content);
   if (json.typescriptLibraries) {
     if (typeof json.typescriptLibraries !== 'string') {
@@ -118,26 +128,25 @@ if (!filepath) {
       );
       process.exit(1);
     }
-    const currentPackage = process.env['npm_config_dir'] || process.cwd();
-    if (!currentPackage) {
-      // console.log('no config_dir')
+    const myPackagefilepath = path.normalize(
+      path.join(__dirname, '../package.json'),
+    );
+    if (myPackagefilepath === filepathFromInstallingProject) {
+      console.log('skip as same package');
       process.exit(0);
     }
-    const p = path.normalize(path.join(currentPackage, 'package.json'));
-    if (p === filepath) {
-      // console.log('skip as same package')
-      process.exit(0);
-    }
-    if (!fs.existsSync(p)) {
+    if (!fs.existsSync(myPackagefilepath)) {
       console.error(`current package package.json not found`);
       process.exit(1);
     }
 
-    const packageName = process.env['npm_package_name'];
+    const myPackageContent = fs.readFileSync(myPackagefilepath, 'utf8');
+    const myPackage = JSON.parse(myPackageContent);
+
     const destination = path.join(
-      path.dirname(filepath),
+      path.dirname(filepathFromInstallingProject),
       json.typescriptLibraries,
-      packageName,
+      myPackage.name,
     );
     // const source = process.env['npm_config_dir'];
     // console.log({source, destination});
