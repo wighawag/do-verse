@@ -35,7 +35,7 @@ export class Blockchain extends EthereumEventsDO {
             typeName: 'Token',
             owner: to,
           };
-          console.log(token);
+          // console.log(token);
           this.store.put(token);
         }
       }
